@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Intro from './components/Intro';
@@ -80,16 +80,28 @@ const AppContent = () => {
   const location = useLocation();
 
   React.useEffect(() => {
-    // If we're on home page and there's a hash, scroll to that section
-    if (location.pathname === '/' && location.hash) {
-      const id = location.hash.replace('#', '');
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          const top = element.getBoundingClientRect().top + window.scrollY - 80;
-          window.scrollTo({ top, behavior: 'smooth' });
-        }
-      }, 100);
+    // For HashRouter, location.hash includes the route path
+    // We need to extract the section id from the hash
+    let hash = location.hash;
+    
+    // If there's a hash and it's not just the route separator
+    if (hash && hash !== '#/' && hash !== '#' && location.pathname === '/') {
+      // Remove the #/ prefix if present
+      let sectionId = hash.replace('#/', '').replace('#', '');
+      
+      // If sectionId is not empty and not a route path
+      if (sectionId && !['about', 'services', 'packages', 'contact', 'aboutus', 'contactus'].includes(sectionId)) {
+        setTimeout(() => {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            const top = element.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    } else if (location.pathname === '/' && location.hash === '#/') {
+      // Just home, scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [location]);
 

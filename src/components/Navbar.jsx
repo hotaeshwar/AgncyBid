@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -59,8 +59,9 @@ const Navbar = () => {
     setActiveLink(id);
 
     if (path) {
-      // For internal pages like /about, /services - open in new tab
-      window.open(path, '_blank', 'noopener,noreferrer');
+      // For internal pages like /about, /services - open in new tab with hash routing
+      const fullPath = `/#${path}`;
+      window.open(fullPath, '_blank', 'noopener,noreferrer');
     } else if (id === 'home') {
       // Navigate to home
       if (location.pathname !== '/') {
@@ -513,7 +514,7 @@ const Navbar = () => {
           {backlinks.map(({ path, label }) => (
             <a
               key={path}
-              href={path}
+              href={`/#${path}`}
               target="_blank"
               rel="noopener noreferrer"
               className="nb-dbacklink"
